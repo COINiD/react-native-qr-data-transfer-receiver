@@ -1,4 +1,10 @@
 {
+  "name": "react-native-qr-data-transfer-receiver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:COINiD/react-native-qr-data-transfer-receiver.git",
+  "author": "rikardwissing <rikard@nocweb.se>",
+  "license": "MIT",
   "dependencies": {
     "md5": "^2.2.1",
     "react-native-camera": "^1.3.0",
