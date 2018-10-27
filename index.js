@@ -22,9 +22,6 @@ class QrDataTransferReceiver extends PureComponent {
     this.collectedData = new Map();
   }
 
-  componentWillReceiveProps() {
-  }
-
   componentWillUnmount() {
     delete this.collectedData;
   }
@@ -36,6 +33,15 @@ class QrDataTransferReceiver extends PureComponent {
     let [index, length, checkSum] = dataInfo.split(':', 3);
     index = Number(index);
     length = Number(length);
+
+    if (!Number.isInteger(index) ||
+        !Number.isInteger(length) ||
+        typeof checkSum !== 'string' ||
+        typeof dataString !== 'string' || 
+        checkSum.length !== 32 ||
+        dataString.length === 0) {
+      return false;
+    }
 
     if (!this.collectedData.has(checkSum)) {
       this.collectedData.set(checkSum, new Map());
@@ -79,7 +85,7 @@ class QrDataTransferReceiver extends PureComponent {
     const { index, length, checkSum } = this.state;
 
     const getItemProps = () => {
-      if (!this.collectedData.has(checkSum)) {
+      if (checkSum === undefined || !this.collectedData.has(checkSum)) {
         return {
           index: 0,
           length: 0,
