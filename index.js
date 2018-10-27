@@ -31,7 +31,8 @@ class QrDataTransferReceiver extends PureComponent {
 
   _onSuccess = ({ data }) => {
     const { onComplete, onError } = this.props;
-    const [dataInfo, dataString] = data.split('/', 2);
+    const [dataInfo] = data.split('/', 1);
+    const dataString = data.substr(data.indexOf('/')+1);
     let [index, length, checkSum] = dataInfo.split(':', 3);
     index = Number(index);
     length = Number(length);
@@ -56,9 +57,8 @@ class QrDataTransferReceiver extends PureComponent {
         const receivedData = sortedCollection.join('');
         const receivedCheckSum = md5(`${receivedData}`).toUpperCase();
 
-
         if (receivedCheckSum !== checkSum) {
-          onError('Checksum mismatch');
+          onError(`Checksum mismatch`);
           return false;
         }
 
