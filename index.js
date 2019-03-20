@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text, ViewPropTypes,
-} from 'react-native';
+import { Text, ViewPropTypes } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import md5 from 'md5';
 
@@ -29,17 +27,19 @@ class QrDataTransferReceiver extends PureComponent {
   _onSuccess = ({ data }) => {
     const { onComplete, onError } = this.props;
     const [dataInfo] = data.split('/', 1);
-    const dataString = data.substr(data.indexOf('/')+1);
+    const dataString = data.substr(data.indexOf('/') + 1);
     let [index, length, checkSum] = dataInfo.split(':', 3);
     index = Number(index);
     length = Number(length);
 
-    if (!Number.isInteger(index) ||
-        !Number.isInteger(length) ||
-        typeof checkSum !== 'string' ||
-        typeof dataString !== 'string' || 
-        checkSum.length !== 32 ||
-        dataString.length === 0) {
+    if (
+      !Number.isInteger(index)
+      || !Number.isInteger(length)
+      || typeof checkSum !== 'string'
+      || typeof dataString !== 'string'
+      || checkSum.length !== 32
+      || dataString.length === 0
+    ) {
       return false;
     }
 
@@ -59,12 +59,14 @@ class QrDataTransferReceiver extends PureComponent {
       });
 
       if (collectionMap.size === length) {
-        const sortedCollection = [...collectionMap.entries()].sort(([aKey], [bKey]) => (aKey - bKey)).map(([, value]) => value);
+        const sortedCollection = [...collectionMap.entries()]
+          .sort(([aKey], [bKey]) => aKey - bKey)
+          .map(([, value]) => value);
         const receivedData = sortedCollection.join('');
         const receivedCheckSum = md5(`${receivedData}`).toUpperCase();
 
         if (receivedCheckSum !== checkSum) {
-          onError(`Checksum mismatch`);
+          onError('Checksum mismatch');
           return false;
         }
 
@@ -73,19 +75,19 @@ class QrDataTransferReceiver extends PureComponent {
     }
 
     return true;
-  }
+  };
 
   _renderTopContent = () => {
     const { topContent } = this.props;
     return topContent;
-  }
+  };
 
   _renderBottomContent = () => {
     const { renderCompletedItems, bottomContent } = this.props;
     const { index, length, checkSum } = this.state;
 
     const getItemProps = () => {
-      if (checkSum === undefined || !this.collectedData.has(checkSum)) {
+      if (checkSum === undefined || !this.collectedData.has(checkSum)) {
         return {
           index: 0,
           length: 0,
@@ -95,7 +97,9 @@ class QrDataTransferReceiver extends PureComponent {
       }
 
       const collectionMap = this.collectedData.get(checkSum);
-      const collectionArray = Array(length).fill().map((e, i) => collectionMap.get(i));
+      const collectionArray = Array(length)
+        .fill()
+        .map((e, i) => collectionMap.get(i));
       const missingIndexes = collectionArray
         .map((e, i) => (!e ? i : false))
         .filter(e => e !== false);
@@ -114,7 +118,7 @@ class QrDataTransferReceiver extends PureComponent {
         {renderCompletedItems(getItemProps())}
       </React.Fragment>
     );
-  }
+  };
 
   render() {
     const { cameraType } = this.props;
@@ -136,6 +140,7 @@ class QrDataTransferReceiver extends PureComponent {
         bottomContent={this._renderBottomContent()}
         customMarker={customMarker}
         fadeIn={fadeIn}
+        cameraProps={{ captureAudio: false }}
       />
     );
   }
@@ -160,11 +165,17 @@ QrDataTransferReceiver.defaultProps = {
     index, length, collectedSize, missingIndexes,
   }) => (
     <Text>
-      { `Progress: ${collectedSize}/${length}, Latest Index: ${index}, Missing ${missingIndexes.join(', ')}` }
+      {`Progress: ${collectedSize}/${length}, Latest Index: ${index}, Missing ${missingIndexes.join(
+        ', ',
+      )}`}
     </Text>
   ),
-  onComplete: (data) => { console.log({ data }); },
-  onError: (error) => { console.log({ error }); },
+  onComplete: (data) => {
+    console.log({ data });
+  },
+  onError: (error) => {
+    console.log({ error });
+  },
   topViewStyle: null,
   topContent: null,
   bottomViewStyle: null,
