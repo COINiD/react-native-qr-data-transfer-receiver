@@ -123,7 +123,7 @@ class QrDataTransferReceiver extends PureComponent {
   render() {
     const { cameraType } = this.props;
     const {
-      topViewStyle, bottomViewStyle, customMarker, cameraStyle, fadeIn,
+      topViewStyle, bottomViewStyle, customMarker, cameraStyle, fadeIn, notAuthorizedView
     } = this.props;
 
     return (
@@ -138,6 +138,7 @@ class QrDataTransferReceiver extends PureComponent {
         topContent={this._renderTopContent()}
         bottomViewStyle={bottomViewStyle}
         bottomContent={this._renderBottomContent()}
+        notAuthorizedView={notAuthorizedView}
         customMarker={customMarker}
         fadeIn={fadeIn}
         cameraProps={{ captureAudio: false }}
